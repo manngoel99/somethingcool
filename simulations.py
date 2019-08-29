@@ -74,7 +74,7 @@ def waitForConvergence(convergence_factor,function,*argvs):
 # Simulations 
 
 # TODO: make a matrix to solve the equation and the use the internal loop for calculating the value of the values
-
+x=5
 dx = length_channel/steps 
 T_productAir_simulations = []
 T_workingAir_dry_simulations = []
