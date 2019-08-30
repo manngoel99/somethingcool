@@ -19,22 +19,22 @@ def h_mass(ReynodNumber,ShmidtNumber,length_channel,themal_conductivity):
 
 # Initial Condition
 
-temp_inlet_dry = 
-absHumidity_inlet_dry = 
-temp_productAir = 
-temp_water = 
+temp_inlet_dry = 35
+absHumidity_inlet_dry = 0.024
+temp_productAir = 35
+temp_water = 20
 
 
 # Geometrical Parameters 
 
-height = 
-length = 
-width = 
+height = 0.05
+length = 0.5
+width = 0.005
 
 # Simulation Parameters
 
-steps = 
-convergence = 
+steps = 100
+convergence = 0.001
 
 # Looping function to simulate the value
 
@@ -74,7 +74,7 @@ def waitForConvergence(convergence_factor,function,*argvs):
 # Simulations 
 
 # TODO: make a matrix to solve the equation and the use the internal loop for calculating the value of the values
-x=5
+
 dx = length_channel/steps 
 T_productAir_simulations = []
 T_workingAir_dry_simulations = []
