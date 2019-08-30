@@ -19,10 +19,10 @@ return Velocity*0.05*0.005*1.1368
 
 # Initial Condition
 
-temp_inlet_dry = 35
+temp_inlet_dry = 308
 absHumidity_inlet_dry = 0.024
-temp_productAir = 35
-temp_water = 20
+temp_productAir = 308
+temp_water = 293
 
 
 # Geometrical Parameters 
@@ -144,31 +144,31 @@ def waitForConvergence(convergence_factor,function,seed,*argv):
 def simulate(steps,convergence_factor,*initalCondition):
 
     dx = length_channel/steps 
-    T_productAir = []
+    T_productAir = 
     T_workingAir_dry = []
     T_workingAir_wet = []
-    absoluteHumidity_workingAir_wet = []
+    absoluteHumidity_workingAir_wet = [0]
     T_water = []
 
     for n in range(steps):
     
-        T_productAir_argumentList = ()
+        T_productAir_argumentList = ( h_heat,dx,b,T_water,m_productAir,c_productAir )
         T_productAir_update = waitForConvergence(convergence_factor,update_temperature_productAir,T_productAir[n],T_productAir_argumentList)
         T_productAir.append(T_productAir_update)
 
-        T_workingAir_dry_argumentList = ()
+        T_workingAir_dry_argumentList = ( h_heat,dx,b,T_water,m_workingAir_dry,c_productAir )
         T_workingAir_dry_update = waitForConvergence(convergence_factor,update_temperature_workingAir_dry,T_workingAir_dry[n],T_productAir_argumentList) 
         T_workingAir_dry.append(T_workingAir_dry_update)
 
-        T_workingAir_wet_argumentList = ()
+        T_workingAir_wet_argumentList = (h_heat,dx,b,w_saturated_wet,m_workingAir_wet)
         T_workingAir_wet_update = waitForConvergence(convergence_factor,update_temperature_workingAir_wet,T_workingAir_wet[n],T_workingAir_wet_argumentList)
         T_workingAir_wet.append(T_workingAir_wet_update)
 
-        absoluteHumidity_workingAir_wet_argumentList = ()
+        absoluteHumidity_workingAir_wet_argumentList = ( h_heat,dx,bT_water,h_mass,iv,w_saturated_wet,w_workingAir_wet,T_workingAir_wet,m_workingAir_dry,c_productAir)
         absoluteHumidity_workingAir_wet_update = waitForConvergence(convergence_factor,update_absoluteHumidity_workingAir_wet,absoluteHumidity_workingAir_wet[n],absoluteHumidity_workingAir_wet_argumentList)
         absoluteHumidity_workingAir_wet.append(absoluteHumidity_workingAir_wet_update)
 
-        T_water_argumentList = ()
+        T_water_argumentList = (c_water,w_saturated_wet,w_workingAir_wet,m_productAir,c_productAir,dT,iv,m_water,T_workingAir_wet,m_workingAir_dry,c_productAir)
         T_water_update = waitForConvergence(convergence_factor,update_temperature_water,T_water[n],T_water_argumentList)
         T_water.append(T_water_update)
 
