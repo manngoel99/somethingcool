@@ -170,11 +170,11 @@ def simulate(steps,convergence_factor,*initalCondition):
         T_workingAir_dry_update = waitForConvergence(convergence_factor,update_temperature_workingAir_dry,T_workingAir_dry[n],T_productAir_argumentList) 
         T_workingAir_dry.append(T_workingAir_dry_update)
        
-        absoluteHumidity_workingAir_wet_argumentList = ( h_heat,dx,T_water[n],h_mass,iv,w_saturated_wet,w_workingAir_wet,T_workingAir_wet[n],m_workingAir_dry,c_productAir)
+        absoluteHumidity_workingAir_wet_argumentList = (h_heat,dx,b,w_saturated_wet,m_workingAir_wet)
         absoluteHumidity_workingAir_wet_update = waitForConvergence(convergence_factor,update_absoluteHumidity_workingAir_wet,absoluteHumidity_workingAir_wet[n],absoluteHumidity_workingAir_wet_argumentList)
         absoluteHumidity_workingAir_wet.append(absoluteHumidity_workingAir_wet_update)
         
-        T_workingAir_wet_argumentList = (h_heat,dx,b,w_saturated_wet,m_workingAir_wet)
+        T_workingAir_wet_argumentList = ( h_heat,dx,T_water[n],h_mass,iv,w_saturated_wet,w_workingAir_wet,T_workingAir_wet[n],m_workingAir_dry,c_productAir)
         T_workingAir_wet_update = waitForConvergence(convergence_factor,update_temperature_workingAir_wet,T_workingAir_wet[n],T_workingAir_wet_argumentList)
         T_workingAir_wet.append(T_workingAir_wet_update)
 
