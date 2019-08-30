@@ -15,7 +15,8 @@ def h_heat(length_channel,equivalent_diameter,themal_conductivity,ReynodNumber,P
 def h_mass(ReynodNumber,ShmidtNumber,length_channel,themal_conductivity):
     return SheerwoodNumber(ReynodNumber,ShmidtNumber)*themal_conductivity/length_channel
 
-
+def massflowrate(Velocity):
+return Velocity*0.05*0.005*1.1368
 
 # Initial Condition
 
@@ -43,14 +44,14 @@ convergence = 0.001
     Specific Heat Capacity : c
     Absoulte Humidity : w
     enthalpy of vaporisation : iv
-
+    Velocity o air input : Velocity
 
     Assumptions :
     1. Temperature of water is maintained using a thermocouple implies (temperature of water remains same)
     2. 
 '''
 
-
+m = massflowrate(Velocity)
 def update_temperature_product():
     return ( h_heat*dx*b*(T_productAir - T_water) + m_productAir*c_productAir*T_productAir )/ ( m_productAir*c_productAir ) 
 
@@ -65,7 +66,7 @@ def update_temperature_workingAir_wet():
 
 def update_massFlowRate_workingAir_wet():
     dT = 
-    return -1. * (m_productAir*c_productAir*dT + m_workingAir_wet*iv*(w_saturated_wet - w_workingAir_wet + c_water*m_water*T_water)) / (c_water*T_water)
+    return -1. * (m_productAir*c_productAir*dT + m_workingAir_wet*iv*(w_saturated_wet - w_workingAir_wet) + c_water*m_water*T_water) / (c_water*T_water)
 
 def waitForConvergence(convergence_factor,function,*argvs):
     values = 
