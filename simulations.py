@@ -173,35 +173,39 @@ def simulate(steps,convergence_factor,initalCondition):
     c_productAir = initalCondition[12]
     m_productAir = initalCondition[13]
     c_water = initalCondition[14]
+    m_water = dx*b
 
+    for n in range(steps):
+        T_workingAir_dry_argumentList = ( h_heat,dx,b,T_water,m_workingAir_dry,c_productAir )
+        T_workingAir_dry_update = waitForConvergence(convergence_factor,update_temperature_workingAir_dry,T_workingAir_dry[n],T_productAir_argumentList) 
+        T_workingAir_dry.append(T_workingAir_dry_update)
+
+    m_workingAir_wet = m_workingAir_dry
+    
     for n in range(steps):
    
         m_productAir = 91.6*0.00001
         T_productAir_argumentList = ( h_heat,dx,b,T_water[n],m_productAir,c_productAir )
         T_productAir_update = waitForConvergence(convergence_factor,update_temperature_productAir,T_productAir[n],T_productAir_argumentList)
         T_productAir.append(T_productAir_update)
-
-        T_workingAir_dry_argumentList = ( h_heat,dx,b,T_water,m_workingAir_dry,c_productAir )
-        T_workingAir_dry_update = waitForConvergence(convergence_factor,update_temperature_workingAir_dry,T_workingAir_dry[n],T_productAir_argumentList) 
-        T_workingAir_dry.append(T_workingAir_dry_update)
      
         #Calculate m_workingAir_wet
-        m_workingAir_wet = m_workingAir_wet +((w_saturated_wet - w_workingair_wet)*dx*0.05*0.005)
+        
         w_workingAir_wet_argumentList = (h_heat,dx,b,w_saturated_wet,m_workingAir_wet)
         w_workingAir_wet_update = waitForConvergence(convergence_factor,update_absoluteHumidity_workingAir_wet,w_workingAir_wet[n],w_workingAir_wet_argumentList)
         w_workingAir_wet.append(w_workingAir_wet_update)
+        m_workingAir_wet = m_workingAir_wet +((w_saturated_wet - w_workingair_wet)*dx*0.05*0.005)
         
         T_workingAir_wet_argumentList = ( h_heat,dx,b,T_water[n],h_mass,iv,w_saturated_wet,w_workingAir_wet[n],T_workingAir_wet[n],m_workingAir_dry,c_productAir)
         T_workingAir_wet_update = waitForConvergence(convergence_factor,update_temperature_workingAir_wet,T_workingAir_wet[n],T_workingAir_wet_argumentList)
         T_workingAir_wet.append(T_workingAir_wet_update)
 
-
         # Calculate m_water
-        m_water = m_water +((w_saturated_wet - w_workingair_wet)*dx*0.05*0.005)
+        
         T_water_argumentList = (c_water,w_saturated_wet,w_workingAir_wet[n],m_productAir,c_productAir,T_productAir[n+1]-T_productAir[n],iv,m_water,T_workingAir_wet[n],m_workingAir_dry,c_productAir,m_workingAir_wet)
         T_water_update = waitForConvergence(convergence_factor,update_temperature_water,T_water[n],T_water_argumentList)
         T_water.append(T_water_update)
-
+        m_water = m_water +((w_saturated_wet - w_workingair_wet)*dx*0.05*0.005)
 
     return T_productAir,T_workingAir_dry,T_workingAir_wet,w_workingAir_wet,T_water,m_productAir 
 
@@ -268,7 +272,6 @@ def simulateTimeBasedCooling(number_channel,timeDivision,duration_inMin,volumn_r
 
 
     np.savetxt('output/T_productAir',np.array(T_productAir_allTime))
-
     np.savetxt('output/T_workingAir_dry',np.array(T_workingAir_dry_allTime))
     np.savetxt('output/T_workingAir_wet',np.array(T_workingAir_wet_allTime))
     np.savetxt('output/w_workingAir_wet',np.array(w_workingAir_wet_allTime))
@@ -285,16 +288,6 @@ def cool_room(m_flowrate,duration,volumn_room,temp_airOut, temp_room):
     global density
     
     Final_temp = ( volumn_room*density*heat_capacity_air*temp_room +m_flowrate*duration*heat_capacity_air*temp_airOut ) / (volumn_room*density*heat_capacity_air + m_flowrate*duration*heat_capacity_air)
-
-        
     return Final_temp
+  
 simulateTimeBasedCooling(110,2,900,53.11904,293,308,0.024,*initialCondition)
-
-
-
-
-        
-
-
-
-
