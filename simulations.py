@@ -55,7 +55,6 @@ Velocity = 1.16;
 m = massflowrate(Velocity)
 
 def update_temperature_productAir(self,argv):
-    print(argv)
     argv = argv[0]
     h_heat = argv[0]
     dx = argv[1]
@@ -68,7 +67,7 @@ def update_temperature_productAir(self,argv):
     return ( h_heat*dx*b*(T_productAir - T_water) + m_productAir*c_productAir*T_productAir ) / ( m_productAir*c_productAir ) 
 
 def update_temperature_workingAir_dry(self,argv):
-    print(argv)
+    
     argv = argv[0]
     h_heat = argv[0]
     dx = argv[1]
@@ -82,27 +81,30 @@ def update_temperature_workingAir_dry(self,argv):
 
 def update_absoluteHumidity_workingAir_wet(self,argv):
     
-    h_heat = argv[0],
-    dx = argv[1],
-    b = argv[2],
-    w_saturated_wet = argv[3],
-    m_workingAir_wet = argv[4],
+
+    argv = argv[0]
+    h_mass = argv[0]
+    dx = argv[1]
+    b = argv[2]
+    w_saturated_wet = argv[3]
+    m_workingAir_wet = argv[4]
     w_workingAir_wet = self
-    
+    print(argv) 
     return ( h_mass*dx*b*(w_saturated_wet - w_workingAir_wet) + m_workingAir_wet*w_workingAir_wet  ) / ( m_workingAir_wet )
 
-def update_temperature_workingAir_wet(self,argv):
-    
-    h_heat = argv[0],
-    dx = argv[1],
-    b = argv[2],
-    T_water = argv[3],
-    h_mass = argv[4],
-    iv = argv[5],
-    w_saturated_wet = argv[6],
-    w_workingAir_wet = argv[7],
-    T_workingAir_wet = argv[8],
-    m_workingAir_dry = argv[9],
+def update_temperature_workingAir_wet(self,argv): 
+    argv = argv[0]
+    print(argv)
+    h_heat = argv[0]
+    dx = argv[1]
+    b = argv[2]
+    T_water = argv[3]
+    h_mass = argv[4]
+    iv = argv[5]
+    w_saturated_wet = argv[6]
+    w_workingAir_wet = argv[7]
+    T_workingAir_wet = argv[8]
+    m_workingAir_dry = argv[9]
     c_productAir = argv[10]
     T_workingAir_wet = self
     
@@ -111,20 +113,23 @@ def update_temperature_workingAir_wet(self,argv):
 # This function will be changed to change in temperature of water in the system
 
 def update_temperature_water(self,argv_list):
-    
-    c_water = argv[0],
-    w_saturated_wet = argv[1],
-    w_workingAir_wet = argv[2],
-    m_productAir = argv[3],
-    c_productAir = argv[4],
-    dT = argv[5],
-    iv = argv[6],
-    m_water = argv[7],
-    T_workingAir_wet = argv[8],
-    m_workingAir_dry = argv[9],
+  
+    argv = argv_list[0]
+    print(argv)
+    c_water = argv[0]
+    w_saturated_wet = argv[1]
+    w_workingAir_wet = argv[2]
+    m_productAir = argv[3]
+    c_productAir = argv[4]
+    dT = argv[5]
+    iv = argv[6]
+    m_water = argv[7]
+    T_workingAir_wet = argv[8]
+    m_workingAir_dry = argv[9]
     c_productAir = argv[10]
+    m_workingAir_wet = argv[11]
     T_water = self
-    
+     
     return (-1. * ((c_water*(w_saturated_wet - w_workingAir_wet)*T_water) + (m_productAir*c_productAir*dT) + (m_workingAir_wet*iv*(w_saturated_wet - w_workingAir_wet))) + (c_water*m_water*T_water)) / (c_water*T_water)
 
 def waitForConvergence(convergence_factor,function,seed,*argv):
@@ -151,24 +156,25 @@ def simulate(steps,convergence_factor,*initalCondition):
     T_productAir = [initalCondition[0]]
     T_workingAir_dry = [initalCondition[1]]
     T_workingAir_wet = [initalCondition[2]]
-    absoluteHumidity_workingAir_wet = [initalCondition[3]]
+    w_workingAir_wet = [initalCondition[3]]
     T_water = [initalCondition[4]]
     h_heat = initalCondition[5]
     
     b = initalCondition[7]
     #T_water = [initalCondition[8]]
-    h_mass = [initalCondition[8]]
-    iv = [initalCondition[9]]
+    h_mass = initalCondition[8]
+    iv = initalCondition[9]
     w_saturated_wet = initalCondition[10]
     #w_workingAir_wet = [initalCondition[12]]
     #T_workingAir_wet = [initalCondition[13]]
     m_workingAir_dry = initalCondition[11]
     c_productAir = initalCondition[12]
     m_productAir = initalCondition[13]
+    c_water = initalCondition[14]
 
     for n in range(steps):
    
-     m_productAir = 91.6*0.00001
+        m_productAir = 91.6*0.00001
         T_productAir_argumentList = ( h_heat,dx,b,T_water[n],m_productAir,c_productAir )
         T_productAir_update = waitForConvergence(convergence_factor,update_temperature_productAir,T_productAir[n],T_productAir_argumentList)
         T_productAir.append(T_productAir_update)
@@ -176,26 +182,30 @@ def simulate(steps,convergence_factor,*initalCondition):
         T_workingAir_dry_argumentList = ( h_heat,dx,b,T_water,m_workingAir_dry,c_productAir )
         T_workingAir_dry_update = waitForConvergence(convergence_factor,update_temperature_workingAir_dry,T_workingAir_dry[n],T_productAir_argumentList) 
         T_workingAir_dry.append(T_workingAir_dry_update)
-      
-        define m_workingair_wet = 
-        absoluteHumidity_workingAir_wet_argumentList = (h_heat,dx,b,w_saturated_wet,m_workingAir_wet)
-        absoluteHumidity_workingAir_wet_update = waitForConvergence(convergence_factor,update_absoluteHumidity_workingAir_wet,absoluteHumidity_workingAir_wet[n],absoluteHumidity_workingAir_wet_argumentList)
-        absoluteHumidity_workingAir_wet.append(absoluteHumidity_workingAir_wet_update)
+     
+        #Calculate m_workingAir_wet
+        m_workingAir_wet = m_productAir 
+        w_workingAir_wet_argumentList = (h_heat,dx,b,w_saturated_wet,m_workingAir_wet)
+        w_workingAir_wet_update = waitForConvergence(convergence_factor,update_absoluteHumidity_workingAir_wet,w_workingAir_wet[n],w_workingAir_wet_argumentList)
+        w_workingAir_wet.append(w_workingAir_wet_update)
         
-        T_workingAir_wet_argumentList = ( h_heat,dx,T_water[n],h_mass,iv,w_saturated_wet,w_workingAir_wet,T_workingAir_wet[n],m_workingAir_dry,c_productAir)
+        T_workingAir_wet_argumentList = ( h_heat,dx,b,T_water[n],h_mass,iv,w_saturated_wet,w_workingAir_wet[n],T_workingAir_wet[n],m_workingAir_dry,c_productAir)
         T_workingAir_wet_update = waitForConvergence(convergence_factor,update_temperature_workingAir_wet,T_workingAir_wet[n],T_workingAir_wet_argumentList)
         T_workingAir_wet.append(T_workingAir_wet_update)
 
-        T_water_argumentList = (c_water,w_saturated_wet,w_workingAir_wet,m_productAir,c_productAir,T_productAir[n+1]-T_productAir[n],iv,m_water,T_workingAir_wet[n],m_workingAir_dry,c_productAir)
+
+        # Calculate m_water
+        m_water = 10
+        T_water_argumentList = (c_water,w_saturated_wet,w_workingAir_wet[n],m_productAir,c_productAir,T_productAir[n+1]-T_productAir[n],iv,m_water,T_workingAir_wet[n],m_workingAir_dry,c_productAir,m_workingAir_wet)
         T_water_update = waitForConvergence(convergence_factor,update_temperature_water,T_water[n],T_water_argumentList)
         T_water.append(T_water_update)
 
 
-    return T_productAir,T_workingAir_dry,T_workingAir_wet,absoluteHumidity_workingAir_wet,T_water
+    return [T_productAir,T_workingAir_dry,T_workingAir_wet,w_workingAir_wet,T_water]
 
 
-simulate(10,1,308,308,308,0.024,293,0.026,0.5,0.05,0.027,2.26e6 ,0.03,91.6e-5,1007,12)
+#Check the parameters again as few of them are added to check wheather calculation are working or not
+print (simulate(10,1,308,308,308,0.024,293,0.026,0.5,0.05,0.027,2.26e6 ,0.03,91.6e-5,1007,12,10))
 
-#def simulateTimeBasedCooling():
-
-    # Get this ready
+def simulateTimeBasedCooling():
+   print("Hello World") 
