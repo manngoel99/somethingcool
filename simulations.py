@@ -209,7 +209,7 @@ def simulate(steps,convergence_factor,initalCondition):
 #Check the parameters again as few of them are added to check wheather calculation are working or not
 print (simulate(10,1,308,308,308,0.024,293,0.026,0.5,0.05,0.027,2.26e6 ,0.03,91.6e-5,1007,12,10))
 
-def simulateTimeBasedCooling(number_channel,timeDivision,duration_inMin,volumn_room,water_temp,temp_room,humidity_room,initalCondition):
+def simulateTimeBasedCooling(number_channel,timeDivision,duration_inMin,volumn_room,water_temp,temp_room,humidity_room,*initalCondition):
    
     # Write the variable about the area of cross section of channel that will be used to release air into the room
     global area 
@@ -264,7 +264,7 @@ def simulateTimeBasedCooling(number_channel,timeDivision,duration_inMin,volumn_r
 
     
         #modifing the inital condition for next step of simulation
-        initalCondition[0]= cool_room(m_flowRate,(n+1)*timeDuration,volumn_room,T_productAir[-1],temp_room)
+        initalCondition[0]= cool_room(m_flowRate,(n+1)*timeDuration,volume_room,T_productAir[-1],temp_room)
 
 
     np.savetxt('output/T_productAir',np.array(T_productAir_allTime))
