@@ -287,6 +287,8 @@ def cool_room(m_flowrate,duration,volumn_room,temp_airOut, temp_room):
     Final_temp = ( volumn_room*density*heat_capacity_air*temp_room +m_flowrate*duration*heat_capacity_air*temp_airOut ) / (volumn_room*density*heat_capacity_air + m_flowrate*duration*heat_capacity_air)
 
         
+    return Final_temp
+
 
 
 
