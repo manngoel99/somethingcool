@@ -186,7 +186,7 @@ def simulate(steps,convergence_factor,initalCondition):
         T_workingAir_dry.append(T_workingAir_dry_update)
      
         #Calculate m_workingAir_wet
-        m_workingAir_wet = m_productAir 
+        m_workingAir_wet = m_workingAir_wet +((w_saturated_wet - w_workingair_wet)*dx*0.05*0.005)
         w_workingAir_wet_argumentList = (h_heat,dx,b,w_saturated_wet,m_workingAir_wet)
         w_workingAir_wet_update = waitForConvergence(convergence_factor,update_absoluteHumidity_workingAir_wet,w_workingAir_wet[n],w_workingAir_wet_argumentList)
         w_workingAir_wet.append(w_workingAir_wet_update)
@@ -197,7 +197,7 @@ def simulate(steps,convergence_factor,initalCondition):
 
 
         # Calculate m_water
-        m_water = 10
+        m_water = m_water +((w_saturated_wet - w_workingair_wet)*dx*0.05*0.005)
         T_water_argumentList = (c_water,w_saturated_wet,w_workingAir_wet[n],m_productAir,c_productAir,T_productAir[n+1]-T_productAir[n],iv,m_water,T_workingAir_wet[n],m_workingAir_dry,c_productAir,m_workingAir_wet)
         T_water_update = waitForConvergence(convergence_factor,update_temperature_water,T_water[n],T_water_argumentList)
         T_water.append(T_water_update)
@@ -212,8 +212,8 @@ print (simulate(10,1,308,308,308,0.024,293,0.026,0.5,0.05,0.027,2.26e6 ,0.03,91.
 def simulateTimeBasedCooling(number_channel,timeDivision,duration_inMin,volumn_room,water_temp,temp_room,humidity_room,*initalCondition):
    
     # Write the variable about the area of cross section of channel that will be used to release air into the room
-    global area 
-    global velocity_air_intake
+    global area = 0.05*0.005
+    global velocity_air_intake = 3
 
     timeDuration = 1/timeDivision
     indexes = range(timeDivision*60*duration_inMin)
@@ -288,7 +288,7 @@ def cool_room(m_flowrate,duration,volumn_room,temp_airOut, temp_room):
 
         
     return Final_temp
-
+simulateTimeBasedCooling(110,2,900,53.11904,293,308,0.024,*initialCondition)
 
 
 
